@@ -75,14 +75,7 @@ class HorizontalPicker extends Component {
 
   getChildren = () => React.Children.toArray(this.props.children);
 
-  snap = (delta) => {
-
-    // When using momentum and releasing the touch with
-    // no velocity, scrollEndActive will be undefined (iOS)
-    if (!this._scrollEndActive && this._scrollEndActive !== 0 && Platform.OS === 'ios') {
-      this._scrollEndActive = this._scrollStartActive;
-    }
-
+  snap = () => {
     this.snapToItem(this.getCurrentIndex());
   }
 
@@ -130,27 +123,26 @@ class HorizontalPicker extends Component {
     }
   }
 
-  onScrollBegin(event) {
-    console.log('onScrollBegin');
+  onScrollBegin = (event) => {
     this.scrollStart = event.nativeEvent.contentOffset.x;
     this.ignoreNextScroll = false;
+    console.log('onScrollBegin', this.scrollStart);
   }
   
   onScrollEnd = (event) => {
     if (this.ignoreNextScroll) {
-      console.log('onScrollEndDrag, ignored');
+      console.log('onScrollEnd, ignored');
       this.ignoreNextScroll = false;
       return;
     }
-    console.log('onScrollEndDrag');
     const scrollEnd = event.nativeEvent.contentOffset.x;
-    const delta = scrollEnd - this.scrollStart;
-
-    //this.snap(delta);
+    // const scrollDirection = Math.sign(scrollEnd - this.scrollStart);
+    console.log('onScrollEnd');
+    this.snap();
   }
 
   onMomentumScrollBegin(event) {
-    console.log('onMomentumScrollBegin');
+    console.log('..');
   }
 
   renderChildren = (children) => {
@@ -158,9 +150,8 @@ class HorizontalPicker extends Component {
   }
 
   renderChild = (child) => {
-    console.log('child.value', child.value);
     return (
-      <View key={child.value} style={{width: this.props.itemWidth}}>{child}</View>
+      <View key={child.props.value} style={{width: this.props.itemWidth}}>{child}</View>
     );
   }
 
@@ -180,7 +171,6 @@ class HorizontalPicker extends Component {
       bounds,
       padding
     });
-    console.log('this.state.bounds', this.state.bounds);
   }
 
   calculatePositions = () => {
@@ -208,9 +198,9 @@ class HorizontalPicker extends Component {
           horizontal={true}
           onScroll={this.handleScroll}
           onScrollBeginDrag={this.onScrollBegin}
+          onScrollEndDrag={() => {}/*this.onScrollEnd*/}
           onMomentumScrollBegin={this.onMomentumScrollBegin}
           onMomentumScrollEnd={this.onScrollEnd}
-          onScrollEndDrag={this.onScrollEnd}
           onLayout={this.onLayout}
           style={{flex: 1, backgroundColor: 'cyan'}}>
           <View style={{flexDirection: 'row', backgroundColor: 'yellow'}}>
