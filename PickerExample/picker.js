@@ -58,14 +58,10 @@ class HorizontalPicker extends Component {
     this.state = intialState;
     this.scrollX = 0;
     this.ignoreNextScroll = false;
+    snapDelay = 100;
   }
 
   static Item = HorizontalPickerItem
-
-  getCurrentIndex = () => {
-    const {itemWidth} = this.props;
-    return Math.ceil(this.scrollX / itemWidth);
-  }
 
   getIndexAt = (x) => {
     const {itemWidth} = this.props;
@@ -76,7 +72,8 @@ class HorizontalPicker extends Component {
   getChildren = () => React.Children.toArray(this.props.children);
 
   snap = () => {
-    this.snapToItem(this.getCurrentIndex());
+    const index = this.getIndexAt(this.scrollX);
+    this.snapToItem(index);
   }
 
   snapToItem = (index, animated = true, fireCallback = true, initial = false) => {
@@ -101,7 +98,9 @@ class HorizontalPicker extends Component {
 
     // Make sure the component hasn't been unmounted
     if (this._scrollview) {
-      console.log('snap ->', snapX);
+      console.log('--------');
+      console.log('! SNAP ! ->', snapX);
+      console.log('--------');
       this._scrollview.scrollTo({x: snapX, y: 0, animated });
       //this.props.onSnapToItem && fireCallback && this.props.onSnapToItem(index);
       this.setState({ oldItemIndex: index });
@@ -114,35 +113,67 @@ class HorizontalPicker extends Component {
     }
   }
 
-  handleScroll = (event) => {
+  onScroll = (event) => {
     this.scrollX = event.nativeEvent.contentOffset.x;
     const index = this.getIndexAt(this.scrollX);
     const item = this.getChildren()[index];
+    console.log('onScroll', index);
     if (item && this.props.onChange) {
       this.props.onChange(item.props.value);
     }
+    this.cancelDelayedSnap();
   }
 
   onScrollBegin = (event) => {
     this.scrollStart = event.nativeEvent.contentOffset.x;
+    this.cancelDelayedSnap();
     this.ignoreNextScroll = false;
     console.log('onScrollBegin', this.scrollStart);
   }
   
-  onScrollEnd = (event) => {
+  onScrollEndDrag = (event) => {
     if (this.ignoreNextScroll) {
       console.log('onScrollEnd, ignored');
       this.ignoreNextScroll = false;
       return;
     }
-    const scrollEnd = event.nativeEvent.contentOffset.x;
+    //const scrollEnd = event.nativeEvent.contentOffset.x;
     // const scrollDirection = Math.sign(scrollEnd - this.scrollStart);
     console.log('onScrollEnd');
-    this.snap();
+    this.delayedSnap();
   }
 
-  onMomentumScrollBegin(event) {
+  onMomentumScrollBegin = (event) => {
+    console.log('onMomentumScrollBegin', event.nativeEvent);
+    this.cancelDelayedSnap();
     console.log('..');
+  }
+
+  onMomentumScrollEnd = (event) => {
+    if (this.ignoreNextScroll) {
+      console.log('onMomentumScrollEnd, ignored');
+      this.ignoreNextScroll = false;
+      return;
+    }
+    this.delayedSnap();
+  }
+
+  delayedSnap = (item) => {
+    console.log('delayedSnap, cancelling previous...');
+    this.cancelDelayedSnap();
+    console.log('delayedSnap');
+    this.snapNoMomentumTimeout =
+      setTimeout(() => {
+        console.log('snap');
+        this.snap();
+      }, this.snapDelay);
+  }
+
+  cancelDelayedSnap = () => {
+    if (this.snapNoMomentumTimeout) {
+      console.log('cancelDelayedSnap');
+      clearTimeout(this.snapNoMomentumTimeout);
+    }
   }
 
   renderChildren = (children) => {
@@ -192,15 +223,15 @@ class HorizontalPicker extends Component {
         <ScrollView
           ref={(scrollview) => { this._scrollview = scrollview; }}
           decelerationRate={'fast'}
-          scrollEventThrottle={100}
+          scrollEventThrottle={16}
           contentContainerStyle={{paddingLeft: this.state.padding.left, paddingRight: this.state.padding.right}}
           showsHorizontalScrollIndicator={false}
           horizontal={true}
-          onScroll={this.handleScroll}
+          onScroll={this.onScroll}
           onScrollBeginDrag={this.onScrollBegin}
-          onScrollEndDrag={() => {}/*this.onScrollEnd*/}
+          onScrollEndDrag={this.onScrollEndDrag}
           onMomentumScrollBegin={this.onMomentumScrollBegin}
-          onMomentumScrollEnd={this.onScrollEnd}
+          onMomentumScrollEnd={this.onMomentumScrollEnd}
           onLayout={this.onLayout}
           style={{flex: 1, backgroundColor: 'cyan'}}>
           <View style={{flexDirection: 'row', backgroundColor: 'yellow'}}>
