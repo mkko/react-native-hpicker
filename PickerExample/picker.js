@@ -58,7 +58,7 @@ class HorizontalPicker extends Component {
     this.state = intialState;
     this.scrollX = 0;
     this.ignoreNextScroll = false;
-    snapDelay = 100;
+    this.snapDelay = 100;
   }
 
   static Item = HorizontalPickerItem
@@ -181,8 +181,9 @@ class HorizontalPicker extends Component {
   }
 
   renderChild = (child) => {
+    const style = [styles.childContainer, {width: this.props.itemWidth}];
     return (
-      <View key={child.props.value} style={{width: this.props.itemWidth}}>{child}</View>
+      <View key={child.props.value} style={style}>{child}</View>
     );
   }
 
@@ -233,8 +234,8 @@ class HorizontalPicker extends Component {
           onMomentumScrollBegin={this.onMomentumScrollBegin}
           onMomentumScrollEnd={this.onMomentumScrollEnd}
           onLayout={this.onLayout}
-          style={{flex: 1, backgroundColor: 'cyan'}}>
-          <View style={{flexDirection: 'row', backgroundColor: 'yellow'}}>
+          style={this.scrollView}>
+          <View style={styles.contentContainer}>
             {bounds && this.renderChildren(this.props.children)}
           </View>
         </ScrollView>
@@ -254,7 +255,19 @@ var styles = StyleSheet.create({
   itemText: {
     fontSize: 40,
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+    flex: 1
+  },
+  scrollView: {
+    flex: 1
+  },
+  contentContainer: {
+    flexDirection: 'row'
+  },
+  childContainer: {
+    flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center'
   }
 });
 

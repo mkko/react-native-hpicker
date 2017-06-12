@@ -46,7 +46,7 @@ export default class PickerExample extends Component {
         </Text>
         <View style={{flexDirection:'row'}}>
           <HorizontalPicker
-            style={{backgroundColor: 'lime', flex: 1, height: 100, width: 200}}
+            style={{flex: 1, height: 100, width: 200}}
             itemWidth={100}
             onChange={this.update}>
             {this.state.items.map(this.renderItem)}
