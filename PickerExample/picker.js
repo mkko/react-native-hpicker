@@ -76,38 +76,28 @@ class HorizontalPicker extends Component {
     this.snapToItem(index);
   }
 
-  snapToItem = (index, animated = true, fireCallback = true, initial = false) => {
-    console.log('snapToItem:', index);
+  snapToItem = (index, animated = true, initial = false) => {
+    //console.log('snapToItem:', index);
     const itemsCount = this.props.children.length;
 
     if (!index) {
       index = 0;
     }
 
-    if (index >= itemsCount) {
-      index = itemsCount - 1;
-      fireCallback = false;
-    } else if (index < 0) {
-      index = 0;
-      fireCallback = false;
-    } else if (index === this.state.oldItemIndex) {
-      fireCallback = false;
-    }
-
     const snapX = index * this.props.itemWidth;
 
     // Make sure the component hasn't been unmounted
     if (this._scrollview) {
-      console.log('--------');
-      console.log('! SNAP ! ->', snapX);
-      console.log('--------');
+      //console.log('--------');
+      //console.log('! SNAP ! ->', snapX);
+      //console.log('--------');
       this._scrollview.scrollTo({x: snapX, y: 0, animated });
       //this.props.onSnapToItem && fireCallback && this.props.onSnapToItem(index);
       this.setState({ oldItemIndex: index });
 
       // iOS fix
       if (!initial && Platform.OS === 'ios') {
-        console.log('ignoreNextScroll');
+        //console.log('ignoreNextScroll');
         this.ignoreNextScroll = true;
       }
     }
@@ -117,7 +107,7 @@ class HorizontalPicker extends Component {
     this.scrollX = event.nativeEvent.contentOffset.x;
     const index = this.getIndexAt(this.scrollX);
     const item = this.getChildren()[index];
-    console.log('onScroll', index);
+    //console.log('onScroll', index);
     if (item && this.props.onChange) {
       this.props.onChange(item.props.value);
     }
@@ -128,30 +118,30 @@ class HorizontalPicker extends Component {
     this.scrollStart = event.nativeEvent.contentOffset.x;
     this.cancelDelayedSnap();
     this.ignoreNextScroll = false;
-    console.log('onScrollBegin', this.scrollStart);
+    //console.log('onScrollBegin', this.scrollStart);
   }
   
   onScrollEndDrag = (event) => {
     if (this.ignoreNextScroll) {
-      console.log('onScrollEnd, ignored');
+      //console.log('onScrollEnd, ignored');
       this.ignoreNextScroll = false;
       return;
     }
     //const scrollEnd = event.nativeEvent.contentOffset.x;
     // const scrollDirection = Math.sign(scrollEnd - this.scrollStart);
-    console.log('onScrollEnd');
+    //console.log('onScrollEnd');
     this.delayedSnap();
   }
 
   onMomentumScrollBegin = (event) => {
-    console.log('onMomentumScrollBegin', event.nativeEvent);
+    //console.log('onMomentumScrollBegin', event.nativeEvent);
     this.cancelDelayedSnap();
-    console.log('..');
+    //console.log('..');
   }
 
   onMomentumScrollEnd = (event) => {
     if (this.ignoreNextScroll) {
-      console.log('onMomentumScrollEnd, ignored');
+      //console.log('onMomentumScrollEnd, ignored');
       this.ignoreNextScroll = false;
       return;
     }
@@ -159,19 +149,19 @@ class HorizontalPicker extends Component {
   }
 
   delayedSnap = (item) => {
-    console.log('delayedSnap, cancelling previous...');
+    //console.log('delayedSnap, cancelling previous...');
     this.cancelDelayedSnap();
-    console.log('delayedSnap');
+    //console.log('delayedSnap');
     this.snapNoMomentumTimeout =
       setTimeout(() => {
-        console.log('snap');
+        //console.log('snap');
         this.snap();
       }, this.snapDelay);
   }
 
   cancelDelayedSnap = () => {
     if (this.snapNoMomentumTimeout) {
-      console.log('cancelDelayedSnap');
+      //console.log('cancelDelayedSnap');
       clearTimeout(this.snapNoMomentumTimeout);
     }
   }
@@ -189,8 +179,6 @@ class HorizontalPicker extends Component {
 
   onLayout = (event) => {
     const {nativeEvent: {layout: {x, y, width, height}}} = event;
-    //this.calculatePositions();
-    // TODO: Also snap to item.
     const bounds = {width, height};
     const leftItemWidth = this.props.itemWidth;
     const rightItemWidth = this.props.itemWidth;
