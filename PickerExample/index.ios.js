@@ -32,7 +32,7 @@ export default class PickerExample extends Component {
 
   renderItem = (item) => {
     const isSelected = item == this.state.pickerValue;
-    const style = isSelected ? {backgroundColor: 'orange'} : {};
+    const style = {}; //isSelected ? {backgroundColor: 'orange'} : {};
     return (
       <HorizontalPicker.Item key={item} label={`${item}`} value={item} style={style}/>
     );

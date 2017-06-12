@@ -239,6 +239,11 @@ class HorizontalPicker extends Component {
             {bounds && this.renderChildren(this.props.children)}
           </View>
         </ScrollView>
+        <View style={styles.overlay} pointerEvents='none'>
+          <View style={[{backgroundColor: '#4444', flex: 1, width: this.props.itemWidth}]}>
+
+          </View>
+        </View>
       </View>
     );
   }
@@ -266,6 +271,16 @@ var styles = StyleSheet.create({
   },
   childContainer: {
     flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center'
+  },
+  overlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    flexDirection: 'column',
     flex: 1,
     alignItems: 'center'
   }
