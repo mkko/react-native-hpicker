@@ -42,7 +42,7 @@ export default class PickerExample extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native!
+          Horizontal Picker Example
         </Text>
         <View style={{flexDirection:'row'}}>
           <HorizontalPicker
@@ -70,12 +70,12 @@ const styles = StyleSheet.create({
   welcome: {
     fontSize: 20,
     textAlign: 'center',
-    margin: 10,
+    margin: 20,
   },
   instructions: {
     textAlign: 'center',
     color: '#333333',
-    marginBottom: 5,
+    marginTop: 20,
   },
   picker: {
     flex: 1,

@@ -42,12 +42,13 @@ const propTypes = {
   style: View.propTypes.style,
   selectedValue: PropTypes.string,
   children: PropTypes.array, // TODO: Make it HorizontalPicker.Item[]
-  itemWidth: PropTypes.number, // TODO: Get rid of this at some point.
-  onChange: PropTypes.func
+  itemWidth: PropTypes.number,
+  onChange: PropTypes.func,
+  renderOverlay: PropTypes.func,
 };
 
 const defaultProps = {
-  itemWidth: 40
+  itemWidth: 30
 };
 
 const intialState = {
@@ -208,8 +209,15 @@ class HorizontalPicker extends Component {
     });
   }
 
+  renderDefaultOverlay() {
+    return (
+      <View style={{flex: 1, borderLeftWidth: 1, borderRightWidth: 1, borderColor: 'gray'}} />
+    );
+  }
+
   render() {
     const bounds = this.state.bounds;
+    const renderOverlay = this.props.renderOverlay || this.renderDefaultOverlay;
     return (
       <View style={[this.props.style]}>
         <ScrollView
@@ -231,8 +239,8 @@ class HorizontalPicker extends Component {
           </View>
         </ScrollView>
         <View style={styles.overlay} pointerEvents='none'>
-          <View style={[{backgroundColor: '#4444', flex: 1, width: this.props.itemWidth}]}>
-
+          <View style={[{flex: 1, width: this.props.itemWidth}]}>
+            {renderOverlay()}
           </View>
         </View>
       </View>
@@ -266,7 +274,6 @@ var styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 20,
-    fontWeight: 'bold',
     textAlign: 'center',
     flex: 1
   },
