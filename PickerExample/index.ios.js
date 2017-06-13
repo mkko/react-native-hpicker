@@ -34,7 +34,7 @@ export default class PickerExample extends Component {
     const isSelected = item == this.state.pickerValue;
     const style = {}; //isSelected ? {backgroundColor: 'orange'} : {};
     return (
-      <HorizontalPicker.Item key={item} label={`${item}`} value={item} style={style}/>
+      <HorizontalPicker.Item key={item} label={`${item}`} value={item} style={{height: 50}}/>
     );
   }
 
@@ -46,8 +46,8 @@ export default class PickerExample extends Component {
         </Text>
         <View style={{flexDirection:'row'}}>
           <HorizontalPicker
-            style={{flex: 1, height: 100, width: 200}}
-            itemWidth={100}
+            style={styles.picker}
+            itemWidth={70}
             onChange={this.update}>
             {this.state.items.map(this.renderItem)}
           </HorizontalPicker>
@@ -77,6 +77,9 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
+  picker: {
+    flex: 1,
+  }
 });
 
 AppRegistry.registerComponent('PickerExample', () => PickerExample);

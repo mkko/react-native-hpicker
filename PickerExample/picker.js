@@ -14,6 +14,14 @@ import {
   Platform,
 } from 'react-native';
 
+
+const itemPropTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.any,
+  style: View.propTypes.style,
+};
+const itemDefaultProps = {};
+
 class HorizontalPickerItem extends Component {
 
   constructor(props) {
@@ -22,16 +30,13 @@ class HorizontalPickerItem extends Component {
   }
 
   render() {
-    return (<Text style={[styles.itemText, this.props.style]}>{this.props.label}</Text>);
+    return (
+      <View style={[styles.item, this.props.style]}>
+        <Text style={styles.itemText}>{this.props.label}</Text>
+      </View>
+    );
   }
 }
-
-HorizontalPickerItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  value: PropTypes.any,
-  style: View.propTypes.style,
-};
-HorizontalPickerItem.defaultProps = {};
 
 const propTypes = {
   style: View.propTypes.style,
@@ -42,6 +47,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+  itemWidth: 40
 };
 
 const intialState = {
@@ -127,8 +133,6 @@ class HorizontalPicker extends Component {
       this.ignoreNextScroll = false;
       return;
     }
-    //const scrollEnd = event.nativeEvent.contentOffset.x;
-    // const scrollDirection = Math.sign(scrollEnd - this.scrollStart);
     //console.log('onScrollEnd');
     this.delayedSnap();
   }
@@ -136,7 +140,6 @@ class HorizontalPicker extends Component {
   onMomentumScrollBegin = (event) => {
     //console.log('onMomentumScrollBegin', event.nativeEvent);
     this.cancelDelayedSnap();
-    //console.log('..');
   }
 
   onMomentumScrollEnd = (event) => {
@@ -171,7 +174,7 @@ class HorizontalPicker extends Component {
   }
 
   renderChild = (child) => {
-    const style = [styles.childContainer, {width: this.props.itemWidth}];
+    const style = [styles.itemContainer, {width: this.props.itemWidth}];
     return (
       <View key={child.props.value} style={style}>{child}</View>
     );
@@ -245,22 +248,27 @@ var styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'stretch',
   },
-  itemText: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    flex: 1
-  },
   scrollView: {
     flex: 1
   },
   contentContainer: {
     flexDirection: 'row'
   },
-  childContainer: {
+  itemContainer: {
     flexDirection: 'row',
     flex: 1,
     alignItems: 'center'
+  },
+  item: {
+    flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center'
+  },
+  itemText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    flex: 1
   },
   overlay: {
     position: 'absolute',
@@ -273,6 +281,9 @@ var styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
+
+HorizontalPickerItem.propTypes = itemPropTypes;
+HorizontalPickerItem.defaultProps = itemDefaultProps;
 
 HorizontalPicker.propTypes = propTypes;
 HorizontalPicker.defaultProps = defaultProps;
