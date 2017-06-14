@@ -1,8 +1,8 @@
 {
-  "name": "react-native-horizontal-picker",
+  "name": "react-native-hpicker",
   "version": "1.0.0",
   "description": "Horizontally scrolling picker component for React Native",
-  "main": "picker.js",
+  "main": "hpicker.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
