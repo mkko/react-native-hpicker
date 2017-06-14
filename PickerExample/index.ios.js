@@ -16,7 +16,7 @@ import {
 import HorizontalPicker from './picker';
 
 const initialState = {
-  pickerValue: 0,
+  pickerValue: 4,
   items: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 }
 
@@ -44,10 +44,11 @@ export default class PickerExample extends Component {
         <Text style={styles.welcome}>
           Horizontal Picker Example
         </Text>
-        <View style={{flexDirection:'row'}}>
+        <View style={styles.pickerContainer}>
           <HorizontalPicker
             style={styles.picker}
             itemWidth={70}
+            foregroundColor='#999'
             onChange={this.update}>
             {this.state.items.map(this.renderItem)}
           </HorizontalPicker>
@@ -76,6 +77,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginTop: 20,
+  },
+  pickerContainer: {
+    flexDirection:'row'
   },
   picker: {
     flex: 1,

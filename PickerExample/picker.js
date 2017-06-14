@@ -14,13 +14,17 @@ import {
   Platform,
 } from 'react-native';
 
+const defaultForegroundColor = '#444';
 
 const itemPropTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.any,
   style: View.propTypes.style,
+  foregroundColor: PropTypes.string,
 };
-const itemDefaultProps = {};
+const itemDefaultProps = {
+  foregroundColor: defaultForegroundColor,
+};
 
 class HorizontalPickerItem extends Component {
 
@@ -30,9 +34,10 @@ class HorizontalPickerItem extends Component {
   }
 
   render() {
+    const color = this.props.foregroundColor || defaultForegroundColor;
     return (
       <View style={[styles.item, this.props.style]}>
-        <Text style={styles.itemText}>{this.props.label}</Text>
+        <Text style={[styles.itemText, {color}]}>{this.props.label}</Text>
       </View>
     );
   }
@@ -45,10 +50,13 @@ const propTypes = {
   itemWidth: PropTypes.number,
   onChange: PropTypes.func,
   renderOverlay: PropTypes.func,
+  foregroundColor: PropTypes.string,
+  backgroundColor: PropTypes.string,
 };
 
 const defaultProps = {
-  itemWidth: 30
+  itemWidth: 30,
+  foregroundColor: defaultForegroundColor,
 };
 
 const intialState = {
@@ -177,7 +185,9 @@ class HorizontalPicker extends Component {
   renderChild = (child) => {
     const style = [styles.itemContainer, {width: this.props.itemWidth}];
     return (
-      <View key={child.props.value} style={style}>{child}</View>
+      <View key={child.props.value} style={style}>
+        <HorizontalPicker.Item {...child.props} foregroundColor={this.props.foregroundColor}/>
+      </View>
     );
   }
 
@@ -209,9 +219,10 @@ class HorizontalPicker extends Component {
     });
   }
 
-  renderDefaultOverlay() {
+  renderDefaultOverlay = () => {
+    const color = this.props.foregroundColor;
     return (
-      <View style={{flex: 1, borderLeftWidth: 1, borderRightWidth: 1, borderColor: 'gray'}} />
+      <View style={{flex: 1, borderLeftWidth: 1, borderRightWidth: 1, borderColor: color}} />
     );
   }
 
