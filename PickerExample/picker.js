@@ -45,7 +45,7 @@ class HorizontalPickerItem extends Component {
 
 const propTypes = {
   style: View.propTypes.style,
-  selectedValue: PropTypes.string,
+  selectedValue: PropTypes.any,
   children: PropTypes.array, // TODO: Make it HorizontalPicker.Item[]
   itemWidth: PropTypes.number,
   onChange: PropTypes.func,
@@ -78,36 +78,57 @@ class HorizontalPicker extends Component {
 
   static Item = HorizontalPickerItem
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.selectedValue !== nextProps.selectedValue) {
+      const index = this.getIndexForItem(nextProps.selectedValue);
+      this.snapToIndex(index);
+    }
+  }
+
+  componentDidMount() {
+    this.snapToItem(this.props.selectedValue, false);
+  }
+
   getIndexAt = (x) => {
     const {itemWidth} = this.props;
     const dx = this.state.bounds.width / 2 - this.state.padding.left;
     return Math.floor((x + dx) / itemWidth);
   }
 
+  getIndexForItem = (item) => {
+    const children = this.getChildren();
+    return children.findIndex(e => e.props.value === item);
+  }
+
   getChildren = () => React.Children.toArray(this.props.children);
 
   snap = () => {
-    const index = this.getIndexAt(this.scrollX);
-    this.snapToItem(index);
+    //const index = this.getIndexAt(this.scrollX);
+    const index = this.getIndexForItem(this.props.selectedValue);
+    this.snapToIndex(index);
   }
 
-  snapToItem = (index, animated = true, initial = false) => {
-    //console.log('snapToItem:', index);
+  snapToItem = (item) => {
+    const index = this.getIndexForItem(item);
+    this.snapToIndex(index);
+  }
+
+  snapToIndex = (index, animated = true, initial = false) => {
+    //console.log('snapToIndex:', index);
     const itemsCount = this.props.children.length;
 
     if (!index) {
-      index = 0;
+      index = 0;  
     }
 
     const snapX = index * this.props.itemWidth;
-
     // Make sure the component hasn't been unmounted
     if (this._scrollview) {
       //console.log('--------');
       //console.log('! SNAP ! ->', snapX);
       //console.log('--------');
       this._scrollview.scrollTo({x: snapX, y: 0, animated });
-      //this.props.onSnapToItem && fireCallback && this.props.onSnapToItem(index);
+      //this.props.onSnapToIndex && fireCallback && this.props.onSnapToIndex(index);
       this.setState({ oldItemIndex: index });
 
       // iOS fix
@@ -120,12 +141,7 @@ class HorizontalPicker extends Component {
 
   onScroll = (event) => {
     this.scrollX = event.nativeEvent.contentOffset.x;
-    const index = this.getIndexAt(this.scrollX);
-    const item = this.getChildren()[index];
-    //console.log('onScroll', index);
-    if (item && this.props.onChange) {
-      this.props.onChange(item.props.value);
-    }
+    //console.log('onScroll', this.scrollX);
     this.cancelDelayedSnap();
   }
 
@@ -167,8 +183,18 @@ class HorizontalPicker extends Component {
     this.snapNoMomentumTimeout =
       setTimeout(() => {
         //console.log('snap');
+        this.onChange()
         this.snap();
       }, this.snapDelay);
+  }
+
+  onChange = () => {
+    const index = this.getIndexAt(this.scrollX);
+    const item = this.getChildren()[index];
+    //console.log('onScroll', index);
+    if (item && this.props.onChange) {
+      this.props.onChange(item.props.value);
+    }
   }
 
   cancelDelayedSnap = () => {

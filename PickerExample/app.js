@@ -42,6 +42,7 @@ export default class PickerExample extends Component {
           <HorizontalPicker
             style={styles.picker}
             itemWidth={70}
+            selectedValue={this.state.pickerValue}
             foregroundColor='#999'
             onChange={this.update}>
             {this.state.items.map(this.renderItem)}
@@ -49,6 +50,20 @@ export default class PickerExample extends Component {
         </View>
         <Text style={styles.instructions}>
           Picker Value: {this.state.pickerValue}
+        </Text>
+        <View style={styles.pickerContainer2}>
+          <Picker selectedValue={this.state.pickerValue}
+              onValueChange={(itemValue, itemIndex) => {
+                console.log('item', itemValue);
+                this.setState({pickerValue: itemValue})
+                }}>
+              <Picker.Item label='1' value={1} />
+              <Picker.Item label='2' value={2} />
+              <Picker.Item label='3' value={3} />
+          </Picker>
+        </View>
+        <Text style={styles.instructions}>
+          Picker Value: {this.state.itemValue}
         </Text>
       </View>
     );
@@ -74,6 +89,10 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     flexDirection:'row'
+  },
+  pickerContainer2: {
+    height: 200,
+    width: 200
   },
   picker: {
     flex: 1,
