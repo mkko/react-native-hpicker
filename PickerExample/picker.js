@@ -71,6 +71,7 @@ class HorizontalPicker extends Component {
   constructor(props) {
     super(props);
     this.state = intialState;
+    this.isScrolling = false;
     this.scrollX = 0;
     this.ignoreNextScroll = false;
     this.snapDelay = 100;
@@ -79,7 +80,7 @@ class HorizontalPicker extends Component {
   static Item = HorizontalPickerItem
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.selectedValue !== nextProps.selectedValue) {
+    if (!this.isScrolling && this.props.selectedValue !== nextProps.selectedValue) {
       const index = this.getIndexForItem(nextProps.selectedValue);
       this.snapToIndex(index);
     }
@@ -145,14 +146,16 @@ class HorizontalPicker extends Component {
     this.cancelDelayedSnap();
   }
 
-  onScrollBegin = (event) => {
+  onScrollBeginDrag = (event) => {
+    this.isScrolling = true;
     this.scrollStart = event.nativeEvent.contentOffset.x;
     this.cancelDelayedSnap();
     this.ignoreNextScroll = false;
-    //console.log('onScrollBegin', this.scrollStart);
+    //console.log('onScrollBeginDrag', this.scrollStart);
   }
   
   onScrollEndDrag = (event) => {
+    this.isScrolling = false;
     if (this.ignoreNextScroll) {
       //console.log('onScrollEnd, ignored');
       this.ignoreNextScroll = false;
@@ -163,11 +166,13 @@ class HorizontalPicker extends Component {
   }
 
   onMomentumScrollBegin = (event) => {
+    this.isScrolling = true;
     //console.log('onMomentumScrollBegin', event.nativeEvent);
     this.cancelDelayedSnap();
   }
 
   onMomentumScrollEnd = (event) => {
+    this.isScrolling = false;
     if (this.ignoreNextScroll) {
       //console.log('onMomentumScrollEnd, ignored');
       this.ignoreNextScroll = false;
@@ -265,7 +270,7 @@ class HorizontalPicker extends Component {
           showsHorizontalScrollIndicator={false}
           horizontal={true}
           onScroll={this.onScroll}
-          onScrollBeginDrag={this.onScrollBegin}
+          onScrollBeginDrag={this.onScrollBeginDrag}
           onScrollEndDrag={this.onScrollEndDrag}
           onMomentumScrollBegin={this.onMomentumScrollBegin}
           onMomentumScrollEnd={this.onMomentumScrollEnd}
