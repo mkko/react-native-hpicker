@@ -33,15 +33,6 @@ class HorizontalPickerItem extends Component {
     super(props);
     this.state = intialState;
   }
-
-  render() {
-    const color = this.props.foregroundColor || defaultForegroundColor;
-    return (
-      <View style={[styles.item, this.props.style]}>
-        <Text style={[styles.itemText, {color}]}>{this.props.label}</Text>
-      </View>
-    );
-  }
 }
 
 const propTypes = {
@@ -221,15 +212,18 @@ class HorizontalPicker extends Component {
   }
 
   renderChild = (child) => {
-    const style = [styles.itemContainer, {width: this.props.itemWidth}];
     const itemValue = child.props.value;
+    const color = this.props.foregroundColor || defaultForegroundColor;
     return (
       <TouchableWithoutFeedback key={itemValue} onPress={x = this.handleItemPress(itemValue)}>
-        <View style={style}>
-            <HorizontalPicker.Item {...child.props} foregroundColor={this.props.foregroundColor}/>
+        <View style={[styles.itemContainer, {width: this.props.itemWidth}]}>
+          <View style={[styles.item, child.props.style]}>
+            <Text style={[styles.itemText, {color}]}>{child.props.label}</Text>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     );
+        // <HorizontalPicker.Item {...child.props} foregroundColor={this.props.foregroundColor}/>
   }
 
   onLayout = (event) => {
