@@ -55,4 +55,4 @@ fastlane/screenshots
 .vscode
 
 # Ignore the deployed file
-picker.js
+hpicker.js

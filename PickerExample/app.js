@@ -7,7 +7,7 @@ import {
   View,
   Device
 } from 'react-native';
-import HorizontalPicker from './picker';
+import HorizontalPicker from './hpicker';
 
 const initialState = {
   pickerValue: 4,
