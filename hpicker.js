@@ -12,6 +12,7 @@ import {
   ScrollView,
   View,
   Platform,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 const defaultForegroundColor = '#444';
@@ -209,16 +210,25 @@ class HorizontalPicker extends Component {
     }
   }
 
+  handleItemPress = (value) => {
+    return () => {
+      this.snapToItem(value);
+    };
+  }
+
   renderChildren = (children) => {
     return children.map(this.renderChild);
   }
 
   renderChild = (child) => {
     const style = [styles.itemContainer, {width: this.props.itemWidth}];
+    const itemValue = child.props.value;
     return (
-      <View key={child.props.value} style={style}>
-        <HorizontalPicker.Item {...child.props} foregroundColor={this.props.foregroundColor}/>
-      </View>
+      <TouchableWithoutFeedback key={itemValue} onPress={x = this.handleItemPress(itemValue)}>
+        <View style={style}>
+            <HorizontalPicker.Item {...child.props} foregroundColor={this.props.foregroundColor}/>
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 

@@ -32,6 +32,5 @@ import HorizontalPicker from 'react-native-hpicker';
 
 ## TODOs
 
-- Make it jump to the specified value by tapping
 - Improve docs
 - Add tests
