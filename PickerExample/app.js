@@ -10,7 +10,9 @@ import {
 import HorizontalPicker from './hpicker';
 
 const initialState = {
-  pickerValue: 4,
+  pickerValue: 0,
+  picker2Value: 1,
+  picker3Value: 2,
   items: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 }
 
@@ -38,18 +40,56 @@ export default class PickerExample extends Component {
         <Text style={styles.welcome}>
           Horizontal Picker Example
         </Text>
+
+        <Text style={styles.instructions}>
+          The default style
+        </Text>
         <View style={styles.pickerContainer}>
           <HorizontalPicker
             style={styles.picker}
             itemWidth={70}
             selectedValue={this.state.pickerValue}
-            foregroundColor='#999'
             onChange={this.update}>
-            {this.state.items.map(this.renderItem)}
+            {this.state.items.map(item =>
+              <HorizontalPicker.Item key={item} label={`${item}`} value={item}/>
+            )}
           </HorizontalPicker>
         </View>
+
         <Text style={styles.instructions}>
-          Picker Value: {this.state.pickerValue}
+          Different color
+        </Text>
+        <View style={styles.pickerContainer}>
+          <HorizontalPicker
+            style={styles.picker}
+            itemWidth={70}
+            selectedValue={this.state.picker2Value}
+            foregroundColor='pink'
+            onChange={i => this.setState({picker2Value: i})}>
+            {this.state.items.map(item =>
+              <HorizontalPicker.Item key={item} label={`${item}`} value={item}/>
+            )}
+          </HorizontalPicker>
+        </View>
+
+        <Text style={styles.instructions}>
+          Different style
+        </Text>
+        <View style={styles.pickerContainer}>
+          <HorizontalPicker
+            style={styles.picker}
+            itemWidth={70}
+            selectedValue={this.state.picker3Value}
+            onChange={i => this.setState({picker3Value: i})}
+            foregroundColor='pink'>
+            {this.state.items.map(item =>
+              <HorizontalPicker.Item key={item} label={`${item}`} value={item} style={{height: 50}}/>
+            )}
+          </HorizontalPicker>
+        </View>
+
+        <Text style={styles.instructions}>
+          Original picker
         </Text>
         <View style={styles.pickerContainer2}>
           <Picker selectedValue={this.state.pickerValue}
@@ -57,14 +97,12 @@ export default class PickerExample extends Component {
                 console.log('item', itemValue);
                 this.setState({pickerValue: itemValue})
                 }}>
-              <Picker.Item label='1' value={1} />
-              <Picker.Item label='2' value={2} />
-              <Picker.Item label='3' value={3} />
+              {this.state.items.map(item =>
+                <Picker.Item key={item} label={`${item}`} value={item}/>
+              )}
           </Picker>
         </View>
-        <Text style={styles.instructions}>
-          Picker Value: {this.state.itemValue}
-        </Text>
+
       </View>
     );
   }
@@ -86,6 +124,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginTop: 20,
+    marginBottom: 20,
   },
   pickerContainer: {
     flexDirection:'row'
