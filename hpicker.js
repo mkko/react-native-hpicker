@@ -66,20 +66,22 @@ class HorizontalPicker extends Component {
     this.isScrolling = false;
     this.scrollX = 0;
     this.ignoreNextScroll = false;
-    this.snapDelay = 100;
+    this.snapDelay = 200;
   }
 
   static Item = HorizontalPickerItem
 
   componentWillReceiveProps(nextProps) {
+    //console.log('componentWillReceiveProps (isScrolling:', this.isScrolling, ')', this.props.selectedValue, '->', nextProps.selectedValue);
     if (!this.isScrolling && this.props.selectedValue !== nextProps.selectedValue) {
-      const index = this.getIndexForItem(nextProps.selectedValue);
-      this.snapToIndex(index);
+      const index = this.getIndexForValue(nextProps.selectedValue);
+      //console.log('componentWillReceiveProps, scrollToIndex:', index);
+      this.scrollToIndex(index);
     }
   }
 
   componentDidMount() {
-    this.snapToItem(this.props.selectedValue, false);
+    this.scrollToValue(this.props.selectedValue, false);
   }
 
   getIndexAt = (x) => {
@@ -88,26 +90,20 @@ class HorizontalPicker extends Component {
     return Math.floor((x + dx) / itemWidth);
   }
 
-  getIndexForItem = (item) => {
+  getIndexForValue = (item) => {
     const children = this.getChildren();
     return children.findIndex(e => e.props.value === item);
   }
 
   getChildren = () => React.Children.toArray(this.props.children);
 
-  snap = () => {
-    //const index = this.getIndexAt(this.scrollX);
-    const index = this.getIndexForItem(this.props.selectedValue);
-    this.snapToIndex(index);
+  scrollToValue = (itemValue, shouldNotify = true) => {
+    const index = this.getIndexForValue(itemValue);
+    this.scrollToIndex(index);
   }
 
-  snapToItem = (item) => {
-    const index = this.getIndexForItem(item);
-    this.snapToIndex(index);
-  }
-
-  snapToIndex = (index, animated = true, initial = false) => {
-    //console.log('snapToIndex:', index);
+  scrollToIndex = (index, animated = true, initial = false) => {
+    //console.log('scrollToIndex:', index);
     const itemsCount = this.props.children.length;
 
     if (!index) {
@@ -116,12 +112,11 @@ class HorizontalPicker extends Component {
 
     const snapX = index * this.props.itemWidth;
     // Make sure the component hasn't been unmounted
-    if (this._scrollview) {
+    if (this.refs.scrollview) {
       //console.log('--------');
       //console.log('! SNAP ! ->', snapX);
       //console.log('--------');
-      this._scrollview.scrollTo({x: snapX, y: 0, animated });
-      //this.props.onSnapToIndex && fireCallback && this.props.onSnapToIndex(index);
+      this.refs.scrollview.scrollTo({x: snapX, y: 0, animated });
       this.setState({ oldItemIndex: index });
 
       // iOS fix
@@ -133,37 +128,42 @@ class HorizontalPicker extends Component {
   }
 
   onScroll = (event) => {
+    //console.log('onScroll');
+    // Sometimes onMomentumScrollBegin event seems to be missing and onMomentumScrollEnd
+    // is sent twice. However, if we receive an onScroll after onMomentumScrollEnd, we
+    // can assume that the momentum scroll is continued.
+    this.isScrolling = true;
     this.scrollX = event.nativeEvent.contentOffset.x;
-    //console.log('onScroll', this.scrollX);
     this.cancelDelayedSnap();
   }
 
   onScrollBeginDrag = (event) => {
+    //console.log('onScrollBeginDrag', this.scrollStart);
     this.isScrolling = true;
     this.scrollStart = event.nativeEvent.contentOffset.x;
     this.cancelDelayedSnap();
     this.ignoreNextScroll = false;
-    //console.log('onScrollBeginDrag', this.scrollStart);
   }
   
   onScrollEndDrag = (event) => {
+    //console.log('onScrollEnd');
     this.isScrolling = false;
     if (this.ignoreNextScroll) {
       //console.log('onScrollEnd, ignored');
       this.ignoreNextScroll = false;
       return;
     }
-    //console.log('onScrollEnd');
     this.delayedSnap();
   }
 
   onMomentumScrollBegin = (event) => {
-    this.isScrolling = true;
     //console.log('onMomentumScrollBegin', event.nativeEvent);
+    this.isScrolling = true;
     this.cancelDelayedSnap();
   }
 
   onMomentumScrollEnd = (event) => {
+    //console.log('onMomentumScrollEnd');
     this.isScrolling = false;
     if (this.ignoreNextScroll) {
       //console.log('onMomentumScrollEnd, ignored');
@@ -176,34 +176,39 @@ class HorizontalPicker extends Component {
   delayedSnap = (item) => {
     //console.log('delayedSnap, cancelling previous...');
     this.cancelDelayedSnap();
+    //console.log('scheduling the snap');
     //console.log('delayedSnap');
     this.snapNoMomentumTimeout =
       setTimeout(() => {
-        //console.log('snap');
-        this.onChange()
-        this.snap();
+        //console.log('doing the snap');
+        const index = this.getIndexAt(this.scrollX);
+        const item = this.getChildren()[index];
+        this.onChange(item.props.value)
+        this.scrollToIndex(index);
       }, this.snapDelay);
-  }
-
-  onChange = () => {
-    const index = this.getIndexAt(this.scrollX);
-    const item = this.getChildren()[index];
-    //console.log('onScroll', index);
-    if (item && this.props.onChange) {
-      this.props.onChange(item.props.value);
-    }
   }
 
   cancelDelayedSnap = () => {
     if (this.snapNoMomentumTimeout) {
+      //console.log('cancelled the delayed snap');
       //console.log('cancelDelayedSnap');
       clearTimeout(this.snapNoMomentumTimeout);
+      this.snapNoMomentumTimeout = null;
+    }
+  }
+
+  onChange = (itemValue) => {
+    //console.log('onScroll', index);
+    if (itemValue && this.props.onChange) {
+      this.props.onChange(itemValue);
     }
   }
 
   handleItemPress = (value) => {
     return () => {
-      this.snapToItem(value);
+      if (value && this.props.onChange) {
+        this.props.onChange(value);
+      }
     };
   }
 
@@ -223,7 +228,6 @@ class HorizontalPicker extends Component {
         </View>
       </TouchableWithoutFeedback>
     );
-        // <HorizontalPicker.Item {...child.props} foregroundColor={this.props.foregroundColor}/>
   }
 
   onLayout = (event) => {
@@ -267,7 +271,7 @@ class HorizontalPicker extends Component {
     return (
       <View style={[this.props.style]}>
         <ScrollView
-          ref={(scrollview) => { this._scrollview = scrollview; }}
+          ref='scrollview'
           decelerationRate={'fast'}
           scrollEventThrottle={16}
           contentContainerStyle={{paddingLeft: this.state.padding.left, paddingRight: this.state.padding.right}}
