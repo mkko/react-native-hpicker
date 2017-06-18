@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mkko/react-native-vertical-picker.git"
+    "url": "git+https://github.com/mkko/react-native-hpicker.git"
   },
   "author": "Mikko Välimäki",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mkko/react-native-vertical-picker/issues"
+    "url": "https://github.com/mkko/react-native-hpicker/issues"
   },
-  "homepage": "https://github.com/mkko/react-native-vertical-picker#readme",
+  "homepage": "https://github.com/mkko/react-native-hpicker#readme",
   "keywords": [
     "react-native",
     "picker"
