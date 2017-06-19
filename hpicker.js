@@ -17,6 +17,8 @@ import {
 
 const defaultForegroundColor = '#444';
 
+
+
 const itemPropTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.any,
@@ -198,7 +200,7 @@ class HorizontalPicker extends Component {
   }
 
   onChange = (itemValue) => {
-    //console.log('onScroll', index);
+    //console.log('onChange', itemValue);
     if (itemValue && this.props.onChange) {
       this.props.onChange(itemValue);
     }
@@ -222,9 +224,7 @@ class HorizontalPicker extends Component {
     return (
       <TouchableWithoutFeedback key={itemValue} onPress={x = this.handleItemPress(itemValue)}>
         <View style={[styles.itemContainer, {width: this.props.itemWidth}]}>
-          <View style={[styles.item, child.props.style]}>
-            <Text style={[styles.itemText, {color}]}>{child.props.label}</Text>
-          </View>
+          <Text style={[styles.itemText, child.props.style, {color}]}>{child.props.label}</Text>
         </View>
       </TouchableWithoutFeedback>
     );
@@ -315,17 +315,19 @@ var styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     flex: 1,
+    justifyContent: 'center',
     alignItems: 'center'
   },
   item: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    backgroundColor: 'yellow'
   },
   itemText: {
     fontSize: 20,
-    textAlign: 'center',
-    flex: 1
+    textAlign: 'center'
   },
   overlay: {
     position: 'absolute',
