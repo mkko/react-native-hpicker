@@ -16,8 +16,7 @@ import {
 } from 'react-native';
 
 const defaultForegroundColor = '#444';
-
-
+const defaultItemWidth = 30;
 
 const itemPropTypes = {
   label: PropTypes.string.isRequired,
@@ -41,15 +40,13 @@ const propTypes = {
   style: View.propTypes.style,
   selectedValue: PropTypes.any,
   children: PropTypes.array, // TODO: Make it HorizontalPicker.Item[]
-  itemWidth: PropTypes.number,
+  itemWidth: PropTypes.number.isRequired,
   onChange: PropTypes.func,
   renderOverlay: PropTypes.func,
-  foregroundColor: PropTypes.string,
-  backgroundColor: PropTypes.string,
+  foregroundColor: PropTypes.string
 };
 
 const defaultProps = {
-  itemWidth: 30,
   foregroundColor: defaultForegroundColor,
 };
 
@@ -86,10 +83,12 @@ class HorizontalPicker extends Component {
     this.scrollToValue(this.props.selectedValue, false);
   }
 
+  getItemWidth = () => this.props.itemWidth && this.props.itemWidth > 0
+    ? this.props.itemWidth : defaultItemWidth;
+
   getIndexAt = (x) => {
-    const {itemWidth} = this.props;
     const dx = this.state.bounds.width / 2 - this.state.padding.left;
-    return Math.floor((x + dx) / itemWidth);
+    return Math.floor((x + dx) / this.getItemWidth());
   }
 
   getIndexForValue = (item) => {
@@ -112,7 +111,7 @@ class HorizontalPicker extends Component {
       index = 0;  
     }
 
-    const snapX = index * this.props.itemWidth;
+    const snapX = index * this.getItemWidth();
     // Make sure the component hasn't been unmounted
     if (this.refs.scrollview) {
       //console.log('--------');
@@ -223,7 +222,7 @@ class HorizontalPicker extends Component {
     const color = this.props.foregroundColor || defaultForegroundColor;
     return (
       <TouchableWithoutFeedback key={itemValue} onPress={x = this.handleItemPress(itemValue)}>
-        <View style={[styles.itemContainer, {width: this.props.itemWidth}]}>
+        <View style={[styles.itemContainer, {width: this.getItemWidth()}]}>
           <Text style={[styles.itemText, child.props.style, {color}]}>{child.props.label}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -233,8 +232,8 @@ class HorizontalPicker extends Component {
   onLayout = (event) => {
     const {nativeEvent: {layout: {x, y, width, height}}} = event;
     const bounds = {width, height};
-    const leftItemWidth = this.props.itemWidth;
-    const rightItemWidth = this.props.itemWidth;
+    const leftItemWidth = this.getItemWidth();
+    const rightItemWidth = this.getItemWidth();
     const padding ={
       left: !bounds ? 0 : ((bounds.width - leftItemWidth) / 2),
       right: !bounds ? 0 : ((bounds.width - rightItemWidth) / 2)
@@ -247,7 +246,7 @@ class HorizontalPicker extends Component {
   }
 
   calculatePositions = () => {
-    const { itemWidth } = this.props;
+    const itemWidth = this.getItemWidth();
 
     this.getChildren().map((item, index) => {
       const _index = this._getCustomIndex(index, props);
@@ -289,7 +288,7 @@ class HorizontalPicker extends Component {
           </View>
         </ScrollView>
         <View style={styles.overlay} pointerEvents='none'>
-          <View style={[{flex: 1, width: this.props.itemWidth}]}>
+          <View style={[{flex: 1, width: this.getItemWidth()}]}>
             {renderOverlay()}
           </View>
         </View>
