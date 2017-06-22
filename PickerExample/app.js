@@ -9,11 +9,19 @@ import {
 } from 'react-native';
 import HorizontalPicker from 'react-native-hpicker';
 
+function range(start, count) {
+  return Array.apply(0, Array(count))
+    .map(function (element, index) { 
+      return index + start;  
+  });
+}
+
 const initialState = {
   pickerValue: 0,
-  picker2Value: 1,
+  picker2Value: 11,
   picker3Value: 2,
-  items: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+  items: range(0,10),
+  anotherItems: range(11,20)
 }
 
 export default class PickerExample extends Component {
@@ -66,7 +74,7 @@ export default class PickerExample extends Component {
             selectedValue={this.state.picker2Value}
             foregroundColor='pink'
             onChange={i => this.setState({picker2Value: i})}>
-            {this.state.items.map(item =>
+            {this.state.anotherItems.map(item =>
               <HorizontalPicker.Item key={item} label={`${item}`} value={item}/>
             )}
           </HorizontalPicker>
