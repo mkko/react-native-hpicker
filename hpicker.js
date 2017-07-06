@@ -148,27 +148,18 @@ class HorizontalPicker extends Component {
   scrollToIndex = (index, animated = true, initial = false) => {
     log('scrollToIndex ->', index);
 
-    this.isScrolling = true;
-
-    // Just ditch the functional paradigms.
-    var scrollIndexChanged = false;
-    var nextIndex = index;
-    if (index === null || index < 0) {
-      nextIndex = 0;
-      scrollIndexChanged = true;
+    if (index < 0 || index >= this.getChildren().length) {
+      // Error; invalid index.
+      return;
     }
 
-    const snapX = nextIndex * this.getItemWidth();
+    this.isScrolling = true;
+
+    const snapX = index * this.getItemWidth();
     // Make sure the component hasn't been unmounted
     if (this.refs.scrollview) {
       log('scroll ->', snapX);
       this.refs.scrollview.scrollTo({x: snapX, y: 0, animated});
-
-      if (scrollIndexChanged) {
-        // TODO: Scroll to the item.
-        //const valueAtIndex = this.getChildren()[nextIndex];
-        //this.props.onChange(valueAtIndex);
-      }
 
       // iOS fix
       if (!initial && Platform.OS === 'ios') {
