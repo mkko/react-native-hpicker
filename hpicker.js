@@ -95,8 +95,8 @@ class HorizontalPicker extends Component {
 
     if (rangeChanged) {
       // The given children have changed
-      log('rangeChanged -> reset');
-      this.onChange(nextProps.selectedValue);
+      log('rangeChanged -> resposition');
+      this.scrollToIndex(index, false);
     } else if (valueChanged) {
       log('valueChanged -> scroll');
       this.scrollToIndex(index, true);
