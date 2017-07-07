@@ -8,7 +8,7 @@ import {
   ScrollView,
   Device
 } from 'react-native';
-import HorizontalPicker from './hpicker';
+import HorizontalPicker from 'react-native-hpicker';
 
 function range(start, count) {
   return Array.apply(0, Array(count))
