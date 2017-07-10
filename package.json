@@ -1,23 +1,26 @@
 {
-  "name": "react-native-hpicker",
-  "version": "1.0.3",
-  "description": "Horizontally scrolling picker component for React Native",
-  "main": "hpicker.js",
+  "name": "PickerExample",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "storybook": "storybook start -p 7007",
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mkko/react-native-hpicker.git"
+  "dependencies": {
+    "react": "16.0.0-alpha.6",
+    "react-native": "0.44.1",
+    "react-native-hpicker": "^1.0.3"
   },
-  "author": "Mikko Välimäki",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mkko/react-native-hpicker/issues"
+  "devDependencies": {
+    "@storybook/react-native": "^3.1.8",
+    "babel-jest": "20.0.3",
+		"babel-preset-react-native": "2.1.0",
+		"jest": "20.0.4",
+		"react-test-renderer": "16.0.0-alpha.12",
+    "react-dom": "^15.6.1"
   },
-  "homepage": "https://github.com/mkko/react-native-hpicker#readme",
-  "keywords": [
-    "react-native",
-    "picker"
-  ]
+  "jest": {
+    "preset": "react-native"
+  }
 }
