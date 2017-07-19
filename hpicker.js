@@ -148,7 +148,7 @@ class HorizontalPicker extends Component {
   scrollToIndex = (index, animated = true, initial = false) => {
     log('scrollToIndex ->', index);
 
-    if (index < 0 || index >= this.getChildren().length) {
+    if (index < 0) {
       // Error; invalid index.
       return;
     }
