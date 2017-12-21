@@ -1,6 +1,5 @@
 import React, {
   Component,
-  PropTypes,
 } from 'react';
 import {
   StyleSheet,
@@ -9,7 +8,9 @@ import {
   View,
   Platform,
   TouchableWithoutFeedback,
+  ViewPropTypes
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 const defaultForegroundColor = '#444';
 const defaultItemWidth = 30;
@@ -18,7 +19,7 @@ const loggingEnabled = false;
 const itemPropTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.any,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   foregroundColor: PropTypes.string,
 };
 const itemDefaultProps = {
@@ -40,7 +41,7 @@ class HorizontalPickerItem extends Component {
 }
 
 const propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   selectedValue: PropTypes.any,
   children: PropTypes.array, // TODO: Make it HorizontalPicker.Item[]
   itemWidth: PropTypes.number.isRequired,
