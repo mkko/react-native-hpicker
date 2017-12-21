@@ -1,6 +1,5 @@
 import React, {
   Component,
-  PropTypes,
 } from 'react';
 import {
   StyleSheet,
@@ -8,8 +7,11 @@ import {
   ScrollView,
   View,
   Platform,
+  ViewPropTypes,
   TouchableWithoutFeedback,
 } from 'react-native';
+
+import PropTypes from 'prop-types';
 
 const defaultForegroundColor = '#444';
 const defaultItemWidth = 30;
@@ -18,7 +20,8 @@ const loggingEnabled = false;
 const itemPropTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.any,
-  style: View.propTypes.style,
+  onPress: PropTypes.func,
+  style: Text.propTypes.style,
   foregroundColor: PropTypes.string,
 };
 const itemDefaultProps = {
@@ -40,7 +43,7 @@ class HorizontalPickerItem extends Component {
 }
 
 const propTypes = {
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
   selectedValue: PropTypes.any,
   children: PropTypes.array, // TODO: Make it HorizontalPicker.Item[]
   itemWidth: PropTypes.number.isRequired,
@@ -271,9 +274,9 @@ class HorizontalPicker extends Component {
     const itemValue = child.props.value;
     const color = this.props.foregroundColor || defaultForegroundColor;
     return (
-      <TouchableWithoutFeedback key={itemValue} onPress={v => this.handleItemPress(v)}>
+      <TouchableWithoutFeedback key={itemValue} onPress={child.props.onPress}>
         <View style={[styles.itemContainer, {width: this.getItemWidth()}]}>
-          <Text style={[styles.itemText, child.props.style, {color}]}>{child.props.label}</Text>
+          <Text style={[styles.itemText, child.props.style, {color}, {opacity: itemValue !== this.props.selectedValue ? 0.4 : 1}]}>{child.props.label}</Text>
         </View>
       </TouchableWithoutFeedback>
     );
@@ -303,7 +306,7 @@ class HorizontalPicker extends Component {
   renderDefaultOverlay = () => {
     const color = this.props.foregroundColor;
     return (
-      <View style={{flex: 1, borderLeftWidth: 1, borderRightWidth: 1, borderColor: color}} />
+      <View style={{flex: 1}} />
     );
   }
 
