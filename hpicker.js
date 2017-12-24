@@ -49,7 +49,8 @@ const propTypes = {
   itemWidth: PropTypes.number.isRequired,
   onChange: PropTypes.func,
   renderOverlay: PropTypes.func,
-  foregroundColor: PropTypes.string
+  foregroundColor: PropTypes.string,
+  inactiveItemOpacity: PropTypes.number
 };
 
 const defaultProps = {
@@ -273,10 +274,11 @@ class HorizontalPicker extends Component {
   renderChild = (child) => {
     const itemValue = child.props.value;
     const color = this.props.foregroundColor || defaultForegroundColor;
+    const opacity = this.props.inactiveItemOpacity && itemValue !== this.props.selectedValue ? this.props.inactiveItemOpacity : 1
     return (
       <TouchableWithoutFeedback key={itemValue} onPress={child.props.onPress}>
         <View style={[styles.itemContainer, {width: this.getItemWidth()}]}>
-          <Text style={[styles.itemText, child.props.style, {color}, {opacity: itemValue !== this.props.selectedValue ? 0.4 : 1}]}>{child.props.label}</Text>
+          <Text style={[styles.itemText, child.props.style, {color, opacity}]}>{child.props.label}</Text>
         </View>
       </TouchableWithoutFeedback>
     );
