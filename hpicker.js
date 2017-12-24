@@ -20,7 +20,6 @@ const loggingEnabled = false;
 const itemPropTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.any,
-  onPress: PropTypes.func,
   style: Text.propTypes.style,
   foregroundColor: PropTypes.string,
 };
@@ -276,7 +275,7 @@ class HorizontalPicker extends Component {
     const color = this.props.foregroundColor || defaultForegroundColor;
     const opacity = this.props.inactiveItemOpacity && itemValue !== this.props.selectedValue ? this.props.inactiveItemOpacity : 1
     return (
-      <TouchableWithoutFeedback key={itemValue} onPress={child.props.onPress}>
+      <TouchableWithoutFeedback key={itemValue} onPress={this.handleItemPress(itemValue)}>
         <View style={[styles.itemContainer, {width: this.getItemWidth()}]}>
           <Text style={[styles.itemText, child.props.style, {color, opacity}]}>{child.props.label}</Text>
         </View>
