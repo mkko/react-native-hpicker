@@ -112,7 +112,7 @@ class HorizontalPicker extends Component {
     } else if (valueChanged) {
       log('valueChanged -> scroll');
       this.scrollToIndex(index, true);
-    } else if (!this.isScrolling && visualsChanged) {
+    } else if (visualsChanged) {
       // Check if the current value is even possible.
       // If not, we don't know where to scroll, so ignore.
       const indexForSelectedValue = this.getIndexForValue(nextProps.selectedValue, nextProps.children);
